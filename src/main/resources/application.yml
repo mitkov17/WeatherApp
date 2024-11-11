@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: WeatherApp
+  datasource:
+    url: jdbc:postgresql://localhost:5432/WeatherAppDB
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 171101
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
