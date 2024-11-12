@@ -18,4 +18,6 @@ public class MeasurementDTO {
     @NotNull(message = "Measurement value should not be null!")
     private Double measurementValue;
 
+    @NotNull(message = "Sensor ID should not be null")
+    private Long sensorId;
 }

@@ -1,5 +1,6 @@
 package com.mitkov.weatherapp.WeatherApp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class Sensor {
     private Long id;
 
     @Column(name = "name")
-    @Size(min = 1, max = 100, message = "Name length should be between 1 and 100 symbols")
+    @Size(min = 2, max = 100, message = "Name length should be between 2 and 100 symbols")
     private String name;
 
     @Embedded
@@ -35,6 +36,7 @@ public class Sensor {
     private Date dateOfInstallation;
 
     @OneToMany(mappedBy = "sensor")
+    @JsonIgnore
     private List<Measurement> measurements;
 
 }

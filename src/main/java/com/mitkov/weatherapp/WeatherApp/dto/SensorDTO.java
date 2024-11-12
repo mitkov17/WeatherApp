@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class SensorDTO {
 
-    @Size(min = 1, max = 100, message = "Name length should be between 1 and 100 symbols")
+    @Size(min = 2, max = 100, message = "Name length should be between 2 and 100 symbols")
     private String name;
 
     private Location location;
