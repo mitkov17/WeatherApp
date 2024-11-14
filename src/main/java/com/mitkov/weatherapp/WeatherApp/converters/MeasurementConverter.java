@@ -23,10 +23,11 @@ public class MeasurementConverter {
 
     public Measurement convertToMeasurement(MeasurementDTO measurementDTO) {
         Measurement measurement = modelMapper.map(measurementDTO, Measurement.class);
+        measurement.setId(null);
         measurement.setMeasuredAt(new Date());
 
         if (measurementDTO.getSensorId() != null) {
-            Sensor sensor = sensorService.findById(measurementDTO.getSensorId()).orElse(null);
+            Sensor sensor = sensorService.findById(measurementDTO.getSensorId());
             measurement.setSensor(sensor);
         } else {
             throw new SensorNotFoundException();

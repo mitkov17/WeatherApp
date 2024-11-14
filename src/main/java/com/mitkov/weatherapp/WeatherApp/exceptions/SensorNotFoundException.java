@@ -5,4 +5,7 @@ public class SensorNotFoundException extends RuntimeException {
         super("Sensor not found!");
     }
 
+    public SensorNotFoundException(Long sensorId) {
+        super("Sensor with id " + " does not exist!");
+    }
 }

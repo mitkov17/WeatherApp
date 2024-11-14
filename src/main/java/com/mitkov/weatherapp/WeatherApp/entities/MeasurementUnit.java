@@ -1,6 +1,6 @@
 package com.mitkov.weatherapp.WeatherApp.entities;
 
-public enum MeasurementType {
+public enum MeasurementUnit {
 
     DEGREES_CELSIUS, HUMIDITY_PERCENT, PASCAL
 }

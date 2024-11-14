@@ -2,6 +2,7 @@ package com.mitkov.weatherapp.WeatherApp.controllers;
 
 import com.mitkov.weatherapp.WeatherApp.converters.SensorConverter;
 import com.mitkov.weatherapp.WeatherApp.dto.SensorDTO;
+import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
 import jakarta.validation.Valid;
@@ -41,7 +42,32 @@ public class SensorController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Sensor> getSensorById(@PathVariable("id") Long sensorId) {
+    public Sensor getSensorById(@PathVariable("id") Long sensorId) {
         return sensorService.findById(sensorId);
     }
+
+    @GetMapping("/{id}/measurements")
+    public List<Measurement> getMeasurementsBySensor(@PathVariable("id") Long sensorId) {
+        return sensorService.getMeasurementsBySensor(sensorId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteSensor(@PathVariable("id") Long sensorId) {
+        sensorService.deleteSensor(sensorId);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public List<Sensor> searchForSensor(@RequestParam String template) {
+        return sensorService.searchForSensor(template);
+    }
+
+    @PatchMapping("/{id}/update")
+    public ResponseEntity<HttpStatus> updateSensorName(@PathVariable("id") Long sensorId, @RequestParam String newName) {
+        sensorService.updateSensorName(sensorId, newName);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 }
