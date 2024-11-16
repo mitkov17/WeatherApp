@@ -85,6 +85,12 @@
             <column name="measured_at" valueDate="2024-04-03T14:00:00"/>
             <column name="sensor_id" valueNumeric="3"/>
         </insert>
+
+        <rollback>
+            <delete tableName="measurement">
+                <where>id IN (1, 2, 3, 4, 5, 6, 7, 8, 9)</where>
+            </delete>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

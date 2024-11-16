@@ -72,8 +72,8 @@ public class MeasurementController {
 
     @GetMapping("/statistics")
     public List<MeasurementsStatisticsDTO> getMeasurementStatistics(@RequestParam(required = false) MeasurementUnit measurementUnit,
-                                                                  @RequestParam(required = false) String startDate,
-                                                                  @RequestParam(required = false) String endDate) {
+                                                                    @RequestParam(required = false) String startDate,
+                                                                    @RequestParam(required = false) String endDate) {
 
         return measurementService.getMeasurementStatistics(measurementUnit, startDate, endDate);
     }
@@ -91,6 +91,7 @@ public class MeasurementController {
     public Page<Measurement> getPaginatedMeasurements(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
+
         return measurementService.getPaginatedMeasurements(page, size);
     }
 

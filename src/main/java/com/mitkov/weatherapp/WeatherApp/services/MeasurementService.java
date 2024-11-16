@@ -3,6 +3,7 @@ package com.mitkov.weatherapp.WeatherApp.services;
 import com.mitkov.weatherapp.WeatherApp.dto.MeasurementsStatisticsDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
+import com.mitkov.weatherapp.WeatherApp.exceptions.*;
 import com.mitkov.weatherapp.WeatherApp.repositories.MeasurementRepository;
 import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.DoubleSummaryStatistics;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,14 +48,14 @@ public class MeasurementService {
     public List<Measurement> filterMeasurements(MeasurementUnit measurementUnit, Double min, Double max) {
 
         if (measurementUnit == null) {
-            throw new IllegalArgumentException("MeasurementUnit is required");
+            throw new MeasurementUnitIsRequiredException("Measurement unit is required!");
         }
 
         List<Measurement> resultList;
 
         if (min != null && max != null) {
             if (min > max) {
-                throw new IllegalArgumentException("Min value cannot be greater than Max value");
+                throw new InvalidMeasurementRangeException("Min value cannot be greater than Max value");
             }
             resultList = measurementRepository.findByMeasurementUnitAndMeasurementValueBetween(measurementUnit, min, max);
         } else if (min != null) {
@@ -68,7 +71,7 @@ public class MeasurementService {
 
     public List<Measurement> sortMeasurements(MeasurementUnit measurementUnit, Boolean ascending, SortParameter sortParam) {
         if (measurementUnit == null) {
-            throw new IllegalArgumentException("MeasurementUnit is required");
+            throw new MeasurementUnitIsRequiredException("Measurement unit is required!");
         }
 
         String sortField = (sortParam != null) ? sortParam.getSortField() : "measurementValue";
@@ -133,11 +136,20 @@ public class MeasurementService {
         try {
             return formatter.parse(dateStr);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Please use 'yyyy/MM/dd'");
+            throw new InvalidDateFormatException("Invalid date format. Please use 'yyyy/MM/dd'");
         }
     }
 
     public Page<Measurement> getPaginatedMeasurements(int page, int size) {
+
+        if (page < 0) {
+            throw new InvalidPageNumberException("Page number must be greater than or equal to 0.");
+        }
+
+        if (size <= 0 || size > 100) {
+            throw new InvalidPageSizeException("Size must be greater than 0 and less than or equal to 100.");
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         return measurementRepository.findAll(pageable);
     }

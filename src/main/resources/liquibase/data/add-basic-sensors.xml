@@ -31,6 +31,12 @@
             <column name="sensor_type" value="PRESSURE"/>
             <column name="date_of_installation" valueDate="2024-03-01"/>
         </insert>
+
+        <rollback>
+            <delete tableName="sensor">
+                <where>id IN (1, 2, 3)</where>
+            </delete>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
