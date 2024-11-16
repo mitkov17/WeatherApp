@@ -6,6 +6,9 @@ import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
 import com.mitkov.weatherapp.WeatherApp.repositories.MeasurementRepository;
 import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,5 +135,10 @@ public class MeasurementService {
         } catch (ParseException e) {
             throw new IllegalArgumentException("Invalid date format. Please use 'yyyy/MM/dd'");
         }
+    }
+
+    public Page<Measurement> getPaginatedMeasurements(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return measurementRepository.findAll(pageable);
     }
 }

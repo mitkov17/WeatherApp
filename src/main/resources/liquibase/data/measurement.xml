@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/measurement.xml">
+
+    <changeSet id="2" author="MitkovMaksym">
+        <createTable tableName="measurement">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="raining" type="BOOLEAN" />
+            <column name="measurement_unit" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="measurement_value" type="DOUBLE"/>
+            <column name="measured_at" type="TIMESTAMP"/>
+            <column name="sensor_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_measurement_sensor"
+                             referencedTableName="sensor" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="measurement" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

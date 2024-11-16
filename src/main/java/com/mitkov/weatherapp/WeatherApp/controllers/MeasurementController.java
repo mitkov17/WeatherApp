@@ -11,6 +11,7 @@ import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
 import com.mitkov.weatherapp.WeatherApp.util.View;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -78,10 +79,19 @@ public class MeasurementController {
     }
 
     @GetMapping("/range")
+    @JsonView(View.Summary.class)
     public List<Measurement> getMeasurementsByTimeRange(@RequestParam String startDate,
                                                         @RequestParam String endDate) {
 
         return measurementService.getMeasurementsByTimeRange(startDate, endDate);
+    }
+
+    @GetMapping("/paginated")
+    @JsonView(View.Summary.class)
+    public Page<Measurement> getPaginatedMeasurements(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return measurementService.getPaginatedMeasurements(page, size);
     }
 
 }
