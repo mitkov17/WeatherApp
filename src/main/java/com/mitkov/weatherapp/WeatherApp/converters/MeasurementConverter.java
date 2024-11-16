@@ -5,21 +5,19 @@ import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.exceptions.SensorNotFoundException;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class MeasurementConverter {
 
     private final ModelMapper modelMapper;
-    private final SensorService sensorService;
 
-    public MeasurementConverter(ModelMapper modelMapper, SensorService sensorService) {
-        this.modelMapper = modelMapper;
-        this.sensorService = sensorService;
-    }
+    private final SensorService sensorService;
 
     public Measurement convertToMeasurement(MeasurementDTO measurementDTO) {
         Measurement measurement = modelMapper.map(measurementDTO, Measurement.class);

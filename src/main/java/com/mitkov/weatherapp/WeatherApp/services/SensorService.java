@@ -2,6 +2,7 @@ package com.mitkov.weatherapp.WeatherApp.services;
 
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
+import com.mitkov.weatherapp.WeatherApp.exceptions.InvalidSensorNameException;
 import com.mitkov.weatherapp.WeatherApp.exceptions.SensorAlreadyExistsException;
 import com.mitkov.weatherapp.WeatherApp.exceptions.SensorNotFoundException;
 import com.mitkov.weatherapp.WeatherApp.repositories.SensorRepository;
@@ -56,6 +57,9 @@ public class SensorService {
 
     @Transactional
     public void updateSensorName(Long sensorId, String newName) {
+        if (newName.length() < 2 || newName.length() > 100) {
+            throw new InvalidSensorNameException("Name length should be between 2 and 100 symbols");
+        }
         Sensor sensor = sensorRepository.findById(sensorId).orElseThrow(() -> new SensorNotFoundException(sensorId));
         sensor.setName(newName);
         sensorRepository.save(sensor);

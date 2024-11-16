@@ -10,6 +10,7 @@ import com.mitkov.weatherapp.WeatherApp.services.MeasurementService;
 import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
 import com.mitkov.weatherapp.WeatherApp.util.View;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,17 +21,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/measurements")
+@RequiredArgsConstructor
 public class MeasurementController {
 
     private final MeasurementService measurementService;
 
     private final MeasurementConverter measurementConverter;
-
-    @Autowired
-    public MeasurementController(MeasurementService measurementService, MeasurementConverter measurementConverter) {
-        this.measurementService = measurementService;
-        this.measurementConverter = measurementConverter;
-    }
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO) {
@@ -87,7 +83,6 @@ public class MeasurementController {
     }
 
     @GetMapping("/paginated")
-    @JsonView(View.Summary.class)
     public Page<Measurement> getPaginatedMeasurements(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {

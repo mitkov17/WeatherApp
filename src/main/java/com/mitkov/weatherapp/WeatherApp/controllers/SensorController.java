@@ -6,6 +6,7 @@ import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +16,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sensors")
+@RequiredArgsConstructor
 public class SensorController {
 
     private final SensorService sensorService;
 
     private final SensorConverter sensorConverter;
-
-    @Autowired
-    public SensorController(SensorService sensorService, SensorConverter sensorConverter) {
-        this.sensorService = sensorService;
-        this.sensorConverter = sensorConverter;
-    }
 
     @PostMapping("/save")
     public ResponseEntity<HttpStatus> saveSensor(@RequestBody @Valid SensorDTO sensorDTO) {
@@ -50,16 +46,16 @@ public class SensorController {
         return sensorService.getMeasurementsBySensor(sensorId);
     }
 
+    @GetMapping("/search")
+    public List<Sensor> searchForSensor(@RequestParam String template) {
+        return sensorService.searchForSensor(template);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteSensor(@PathVariable("id") Long sensorId) {
         sensorService.deleteSensor(sensorId);
 
         return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public List<Sensor> searchForSensor(@RequestParam String template) {
-        return sensorService.searchForSensor(template);
     }
 
     @PatchMapping("/{id}/update")
