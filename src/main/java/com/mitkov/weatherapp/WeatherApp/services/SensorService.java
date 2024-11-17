@@ -46,13 +46,13 @@ public class SensorService {
         return sensor.getMeasurements();
     }
 
+    public List<Sensor> searchForSensor(String template) {
+        return sensorRepository.findByNameContainingIgnoreCase(template);
+    }
+
     @Transactional
     public void deleteSensor(Long sensorId) {
         sensorRepository.delete(sensorRepository.findById(sensorId).orElseThrow(() -> new SensorNotFoundException(sensorId)));
-    }
-
-    public List<Sensor> searchForSensor(String template) {
-        return sensorRepository.findByNameContainingIgnoreCase(template);
     }
 
     @Transactional
