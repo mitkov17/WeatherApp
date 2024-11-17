@@ -1,18 +1,18 @@
 package com.mitkov.weatherapp.WeatherApp.services;
 
-import com.mitkov.weatherapp.WeatherApp.dto.MeasurementDTO;
 import com.mitkov.weatherapp.WeatherApp.dto.MeasurementsStatisticsDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
-import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.exceptions.*;
 import com.mitkov.weatherapp.WeatherApp.repositories.MeasurementRepository;
 import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class MeasurementServiceTest {
 
     @InjectMocks
@@ -33,11 +34,6 @@ public class MeasurementServiceTest {
 
     @Mock
     private MeasurementRepository measurementRepository;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void addMeasurementTest() {

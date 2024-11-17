@@ -6,6 +6,8 @@ import com.mitkov.weatherapp.WeatherApp.dto.MeasurementsStatisticsDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
+import com.mitkov.weatherapp.WeatherApp.exceptions.InvalidDateFormatException;
+import com.mitkov.weatherapp.WeatherApp.exceptions.InvalidMeasurementRangeException;
 import com.mitkov.weatherapp.WeatherApp.services.MeasurementService;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
 import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
@@ -23,8 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -189,4 +190,50 @@ public class MeasurementControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].measurementValue").value(20.0));
     }
+
+    @Test
+    void addMeasurementInvalidDateFormatTest() throws Exception {
+        MeasurementDTO measurementDTO = new MeasurementDTO();
+        measurementDTO.setMeasurementUnit(MeasurementUnit.DEGREES_CELSIUS);
+        measurementDTO.setMeasurementValue(20.0);
+        measurementDTO.setSensorId(1L);
+        measurementDTO.setRaining(true);
+
+        doThrow(new InvalidDateFormatException("Invalid date format. Please use 'yyyy/MM/dd'"))
+                .when(measurementService).addMeasurement(any(Measurement.class));
+
+        mockMvc.perform(post("/api/measurements/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(measurementDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("Invalid date format. Please use 'yyyy/MM/dd'"));
+    }
+
+    @Test
+    void filterMeasurementsInvalidRangeTest() throws Exception {
+        when(measurementService.filterMeasurements(any(MeasurementUnit.class), anyDouble(), anyDouble()))
+                .thenThrow(new InvalidMeasurementRangeException("Min value cannot be greater than Max value"));
+
+        mockMvc.perform(get("/api/measurements/filter")
+                        .param("measurementUnit", "DEGREES_CELSIUS")
+                        .param("min", "20.0")
+                        .param("max", "10.0")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("Min value cannot be greater than Max value"));
+    }
+
+    @Test
+    void getMeasurementsByTimeRangeInvalidDateTest() throws Exception {
+        when(measurementService.getMeasurementsByTimeRange(anyString(), anyString()))
+                .thenThrow(new InvalidDateFormatException("Invalid date format. Please use 'yyyy/MM/dd'"));
+
+        mockMvc.perform(get("/api/measurements/range")
+                        .param("startDate", "16-11-2024")
+                        .param("endDate", "17-11-2024")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("Invalid date format. Please use 'yyyy/MM/dd'"));
+    }
+
 }
