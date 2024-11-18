@@ -2,7 +2,7 @@ spring:
   application:
     name: WeatherApp
   datasource:
-    url: jdbc:postgresql://localhost:5432/WeatherAppDB
+    url: jdbc:postgresql://postgres-db:5433/WeatherAppDB
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 171101

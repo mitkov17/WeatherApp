@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 @Component
@@ -23,6 +25,13 @@ public class MeasurementConverter {
         Measurement measurement = modelMapper.map(measurementDTO, Measurement.class);
         measurement.setId(null);
         measurement.setMeasuredAt(new Date());
+
+        if (measurementDTO.getMeasurementValue() != null) {
+            double roundedValue = BigDecimal.valueOf(measurementDTO.getMeasurementValue())
+                    .setScale(1, RoundingMode.HALF_UP)
+                    .doubleValue();
+            measurement.setMeasurementValue(roundedValue);
+        }
 
         if (measurementDTO.getSensorId() != null) {
             Sensor sensor = sensorService.findById(measurementDTO.getSensorId());
