@@ -1,5 +1,6 @@
 package com.mitkov.weatherapp.WeatherApp.controllers;
 
+import com.mitkov.weatherapp.WeatherApp.converters.AppUserConverter;
 import com.mitkov.weatherapp.WeatherApp.converters.SensorConverter;
 import com.mitkov.weatherapp.WeatherApp.dto.SensorDTO;
 import com.mitkov.weatherapp.WeatherApp.dto.SensorUserCreationDTO;
@@ -30,12 +31,11 @@ public class SensorController {
 
     private final RegistrationService registrationService;
 
+    private final AppUserConverter appUserConverter;
+
     @PostMapping("/register-sensor")
     public ResponseEntity<HttpStatus> registerSensorUser(@RequestBody @Valid SensorUserCreationDTO sensorUserCreationDTO) {
-        AppUser appUser = new AppUser();
-        appUser.setUsername(sensorUserCreationDTO.getUsername());
-        appUser.setPassword(sensorUserCreationDTO.getPassword());
-        appUser.setRole(Role.ROLE_SENSOR);
+        AppUser appUser = appUserConverter.convertToAppUser(sensorUserCreationDTO);
 
         AppUser savedUser = registrationService.register(appUser);
 

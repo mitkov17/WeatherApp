@@ -30,7 +30,6 @@ public class SensorService {
         sensorRepository.save(sensor);
     }
 
-
     public List<Sensor> getAllSensors() {
         return sensorRepository.findAll();
     }

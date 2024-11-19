@@ -16,10 +16,18 @@
             <column name="longitude" type="DOUBLE"/>
             <column name="sensor_type" type="VARCHAR(50)"/>
             <column name="date_of_installation" type="DATE"/>
+            <column name="created_by" type="BIGINT"/>
         </createTable>
 
+        <addForeignKeyConstraint baseTableName="sensor"
+                                 baseColumnNames="created_by"
+                                 referencedTableName="app_user"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_sensor_created_by_user"/>
+
         <rollback>
-            <dropTable tableName="sensor" />
+            <dropForeignKeyConstraint baseTableName="sensor" constraintName="fk_sensor_created_by_user"/>
+            <dropTable tableName="sensor"/>
         </rollback>
     </changeSet>
 
