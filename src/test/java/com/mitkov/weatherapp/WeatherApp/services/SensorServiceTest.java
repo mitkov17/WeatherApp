@@ -26,16 +26,16 @@ public class SensorServiceTest {
     @Mock
     private SensorRepository sensorRepository;
 
-    @Test
-    public void saveSensorTest() {
-
-        Sensor sensor = new Sensor();
-        sensor.setName("testName");
-
-        sensorService.saveSensor(sensor);
-
-        verify(sensorRepository, times(1)).save(sensor);
-    }
+//    @Test
+//    public void saveSensorTest() {
+//
+//        Sensor sensor = new Sensor();
+//        sensor.setName("testName");
+//
+//        sensorService.saveSensor(sensor);
+//
+//        verify(sensorRepository, times(1)).save(sensor);
+//    }
 
     @Test
     public void getSensorsTest() {

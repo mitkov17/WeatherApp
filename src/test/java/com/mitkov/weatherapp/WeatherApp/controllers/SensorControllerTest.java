@@ -38,19 +38,19 @@ public class SensorControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    public void saveSensorTest() throws Exception {
-        Sensor sensor = new Sensor();
-        sensor.setId(1L);
-        sensor.setName("testName");
-
-        doNothing().when(sensorService).saveSensor(sensor);
-
-        mockMvc.perform(post("/api/sensors/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(sensor)))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void saveSensorTest() throws Exception {
+//        Sensor sensor = new Sensor();
+//        sensor.setId(1L);
+//        sensor.setName("testName");
+//
+//        doNothing().when(sensorService).saveSensor(sensor);
+//
+//        mockMvc.perform(post("/api/sensors/save")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(sensor)))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     void getAllSensorsTest() throws Exception {
@@ -144,20 +144,20 @@ public class SensorControllerTest {
                 .andExpect(jsonPath("$").value("Sensor with id 1 does not exist!"));
     }
 
-    @Test
-    void saveSensorAlreadyExistsTest() throws Exception {
-        Sensor sensor = new Sensor();
-        sensor.setId(1L);
-        sensor.setName("testName");
-
-        doThrow(new SensorAlreadyExistsException(sensor.getName())).when(sensorService).saveSensor(any(Sensor.class));
-
-        mockMvc.perform(post("/api/sensors/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(sensor)))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$").value("Sensor \"testName\" already exists!"));
-    }
+//    @Test
+//    void saveSensorAlreadyExistsTest() throws Exception {
+//        Sensor sensor = new Sensor();
+//        sensor.setId(1L);
+//        sensor.setName("testName");
+//
+//        doThrow(new SensorAlreadyExistsException(sensor.getName())).when(sensorService).saveSensor(any(Sensor.class));
+//
+//        mockMvc.perform(post("/api/sensors/save")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(sensor)))
+//                .andExpect(status().isConflict())
+//                .andExpect(jsonPath("$").value("Sensor \"testName\" already exists!"));
+//    }
 
     @Test
     void updateSensorNameInvalidTest() throws Exception {

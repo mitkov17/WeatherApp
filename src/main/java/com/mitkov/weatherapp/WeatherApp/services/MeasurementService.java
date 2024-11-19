@@ -6,11 +6,13 @@ import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
 import com.mitkov.weatherapp.WeatherApp.exceptions.*;
 import com.mitkov.weatherapp.WeatherApp.repositories.MeasurementRepository;
 import com.mitkov.weatherapp.WeatherApp.util.SortParameter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +24,14 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MeasurementService {
 
     private final MeasurementRepository measurementRepository;
 
-    @Autowired
-    public MeasurementService(MeasurementRepository measurementRepository) {
-        this.measurementRepository = measurementRepository;
-    }
-
     @Transactional
+    @PreAuthorize("hasRole('SENSOR')")
     public void addMeasurement(Measurement measurement) {
         measurementRepository.save(measurement);
     }

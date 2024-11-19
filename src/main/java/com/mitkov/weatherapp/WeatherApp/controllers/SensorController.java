@@ -2,9 +2,13 @@ package com.mitkov.weatherapp.WeatherApp.controllers;
 
 import com.mitkov.weatherapp.WeatherApp.converters.SensorConverter;
 import com.mitkov.weatherapp.WeatherApp.dto.SensorDTO;
+import com.mitkov.weatherapp.WeatherApp.dto.SensorUserCreationDTO;
+import com.mitkov.weatherapp.WeatherApp.entities.AppUser;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
+import com.mitkov.weatherapp.WeatherApp.services.RegistrationService;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
+import com.mitkov.weatherapp.WeatherApp.util.Role;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -23,10 +28,20 @@ public class SensorController {
 
     private final SensorConverter sensorConverter;
 
-    @PostMapping("/save")
-    public ResponseEntity<HttpStatus> saveSensor(@RequestBody @Valid SensorDTO sensorDTO) {
+    private final RegistrationService registrationService;
 
-        sensorService.saveSensor(sensorConverter.convertToSensor(sensorDTO));
+    @PostMapping("/register-sensor")
+    public ResponseEntity<HttpStatus> registerSensorUser(@RequestBody @Valid SensorUserCreationDTO sensorUserCreationDTO) {
+        AppUser appUser = new AppUser();
+        appUser.setUsername(sensorUserCreationDTO.getUsername());
+        appUser.setPassword(sensorUserCreationDTO.getPassword());
+        appUser.setRole(Role.ROLE_SENSOR);
+
+        AppUser savedUser = registrationService.register(appUser);
+
+        Sensor sensor = sensorConverter.convertToSensor(sensorUserCreationDTO.getSensorDTO());
+        sensor.setCreatedBy(savedUser);
+        sensorService.saveSensor(sensor);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }

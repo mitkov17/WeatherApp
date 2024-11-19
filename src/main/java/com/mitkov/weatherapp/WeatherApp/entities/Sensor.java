@@ -24,7 +24,7 @@ public class Sensor {
     @JsonView(View.Summary.class)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @Size(min = 2, max = 100, message = "Name length should be between 2 and 100 symbols")
     @JsonView(View.Summary.class)
     private String name;
@@ -44,5 +44,9 @@ public class Sensor {
     @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @JsonIgnore
     private List<Measurement> measurements;
+
+    @OneToOne
+    @JoinColumn(name = "created_by")
+    private AppUser createdBy;
 
 }

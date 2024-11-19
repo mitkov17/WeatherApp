@@ -5,6 +5,8 @@
 
     <include file="data/sensor.xml" relativeToChangelogFile="true" />
     <include file="data/measurement.xml" relativeToChangelogFile="true" />
+    <include file="data/app_user.xml" relativeToChangelogFile="true" />
+    <include file="data/add_sensor_user_column.xml" relativeToChangelogFile="true" />
     <changeSet id="version_0.0.1" author="MitkovMaksym">
         <tagDatabase tag="0.0.1" />
     </changeSet>
