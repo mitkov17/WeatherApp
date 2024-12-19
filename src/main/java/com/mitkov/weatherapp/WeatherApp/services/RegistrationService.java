@@ -2,7 +2,7 @@ package com.mitkov.weatherapp.WeatherApp.services;
 
 import com.mitkov.weatherapp.WeatherApp.entities.AppUser;
 import com.mitkov.weatherapp.WeatherApp.repositories.AppUserRepository;
-import com.mitkov.weatherapp.WeatherApp.util.Role;
+import com.mitkov.weatherapp.WeatherApp.entities.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

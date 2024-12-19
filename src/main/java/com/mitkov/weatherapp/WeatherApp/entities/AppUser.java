@@ -1,6 +1,5 @@
 package com.mitkov.weatherapp.WeatherApp.entities;
 
-import com.mitkov.weatherapp.WeatherApp.util.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

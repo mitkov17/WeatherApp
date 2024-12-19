@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AppUserDetailsService appUserDetailsService;
+
     private final JWTFilter jwtFilter;
 
     @Bean
@@ -39,11 +40,11 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "api/auth/**", "/error", "api/sensors/register-sensor").permitAll()
                         .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/measurements/add").hasRole("SENSOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/sensors/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/sensors/{id}/update").hasRole("ADMIN")
-                        .requestMatchers("api/auth/**", "/error", "api/sensors/register-sensor").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

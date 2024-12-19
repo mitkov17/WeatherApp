@@ -3,7 +3,7 @@ package com.mitkov.weatherapp.WeatherApp.config;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.mitkov.weatherapp.WeatherApp.security.JWTUtil;
 import com.mitkov.weatherapp.WeatherApp.services.AppUserDetailsService;
-import com.mitkov.weatherapp.WeatherApp.util.UserClaims;
+import com.mitkov.weatherapp.WeatherApp.entities.UserClaims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

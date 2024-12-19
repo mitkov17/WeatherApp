@@ -5,8 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.mitkov.weatherapp.WeatherApp.util.Role;
-import com.mitkov.weatherapp.WeatherApp.util.UserClaims;
+import com.mitkov.weatherapp.WeatherApp.entities.Role;
+import com.mitkov.weatherapp.WeatherApp.entities.UserClaims;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

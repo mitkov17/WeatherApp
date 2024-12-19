@@ -12,7 +12,7 @@ import com.mitkov.weatherapp.WeatherApp.exceptions.SensorNotFoundException;
 import com.mitkov.weatherapp.WeatherApp.security.JWTUtil;
 import com.mitkov.weatherapp.WeatherApp.services.AppUserDetailsService;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
-import com.mitkov.weatherapp.WeatherApp.util.Role;
+import com.mitkov.weatherapp.WeatherApp.entities.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

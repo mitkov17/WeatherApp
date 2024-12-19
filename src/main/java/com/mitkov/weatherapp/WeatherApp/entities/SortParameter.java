@@ -1,4 +1,4 @@
-package com.mitkov.weatherapp.WeatherApp.util;
+package com.mitkov.weatherapp.WeatherApp.entities;
 
 import lombok.Getter;
 

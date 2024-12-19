@@ -2,22 +2,21 @@ package com.mitkov.weatherapp.WeatherApp.controllers;
 
 import com.mitkov.weatherapp.WeatherApp.converters.AppUserConverter;
 import com.mitkov.weatherapp.WeatherApp.converters.SensorConverter;
-import com.mitkov.weatherapp.WeatherApp.dto.SensorDTO;
 import com.mitkov.weatherapp.WeatherApp.dto.SensorUserCreationDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.AppUser;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.services.RegistrationService;
 import com.mitkov.weatherapp.WeatherApp.services.SensorService;
-import com.mitkov.weatherapp.WeatherApp.util.Role;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -33,9 +32,14 @@ public class SensorController {
 
     private final AppUserConverter appUserConverter;
 
+    @Operation(description = "Method that registers new sensors")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Sensor already exists!")
+    })
     @PostMapping("/register-sensor")
     public ResponseEntity<HttpStatus> registerSensorUser(@RequestBody @Valid SensorUserCreationDTO sensorUserCreationDTO) {
-        AppUser appUser = appUserConverter.convertToAppUser(sensorUserCreationDTO);
+        AppUser appUser = appUserConverter.convertSensorToAppUser(sensorUserCreationDTO);
 
         AppUser savedUser = registrationService.register(appUser);
 
@@ -46,6 +50,10 @@ public class SensorController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @Operation(description = "Method that returns all the sensors")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
     @GetMapping()
     public List<Sensor> getAllSensors() {
         return sensorService.getAllSensors();
