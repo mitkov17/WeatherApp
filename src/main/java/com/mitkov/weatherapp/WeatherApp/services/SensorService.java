@@ -20,22 +20,16 @@ public class SensorService {
 
     private final SensorRepository sensorRepository;
 
-    @Transactional
-    public void saveSensor(Sensor sensor) {
-        sensorRepository.findByName(sensor.getName())
-                .ifPresent(existingSensor -> {
-                    throw new SensorAlreadyExistsException(sensor.getName());
-                });
-
-        sensorRepository.save(sensor);
-    }
-
     public List<Sensor> getAllSensors() {
         return sensorRepository.findAll();
     }
 
     public Sensor findById(Long sensorId) {
         return sensorRepository.findById(sensorId).orElseThrow(() -> new SensorNotFoundException(sensorId));
+    }
+
+    public Sensor findByName(String name) {
+        return sensorRepository.findByName(name).orElseThrow(SensorNotFoundException::new);
     }
 
     public List<Measurement> getMeasurementsBySensor(Long sensorId) {

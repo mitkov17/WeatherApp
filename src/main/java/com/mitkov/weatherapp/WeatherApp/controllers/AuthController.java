@@ -1,13 +1,19 @@
 package com.mitkov.weatherapp.WeatherApp.controllers;
 
-import com.mitkov.weatherapp.WeatherApp.dto.AppUserDTO;
+import com.mitkov.weatherapp.WeatherApp.converters.AppUserConverter;
+import com.mitkov.weatherapp.WeatherApp.converters.SensorConverter;
 import com.mitkov.weatherapp.WeatherApp.dto.AuthenticationDTO;
+import com.mitkov.weatherapp.WeatherApp.dto.RegistrationSensorDTO;
+import com.mitkov.weatherapp.WeatherApp.dto.RegistrationUserDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.AppUser;
+import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.security.JWTUtil;
+import com.mitkov.weatherapp.WeatherApp.services.AppUserService;
 import com.mitkov.weatherapp.WeatherApp.services.RegistrationService;
+import com.mitkov.weatherapp.WeatherApp.services.SensorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,19 +33,33 @@ public class AuthController {
 
     private final JWTUtil jwtUtil;
 
-    private final ModelMapper modelMapper;
-
     private final AuthenticationManager authenticationManager;
 
-    @PostMapping("/registration")
-    public Map<String, String> performRegistration(@RequestBody @Valid AppUserDTO appUserDTO) {
+    private final SensorConverter sensorConverter;
 
-        AppUser appUser = convertToAppUser(appUserDTO);
+    private final AppUserService appUserService;
+
+    private final SensorService sensorService;
+
+    private final AppUserConverter appUserConverter;
+
+    @PostMapping("/registration")
+    public ResponseEntity<String> performRegistration(@RequestBody @Valid RegistrationUserDTO registrationUserDTO) {
+
+        AppUser appUser = appUserConverter.convertToAppUser(registrationUserDTO);
 
         registrationService.register(appUser);
 
-        String token = jwtUtil.generateToken(appUser.getUsername(), appUser.getRole());
-        return Map.of("jwt-token", token);
+        return ResponseEntity.ok("Registration successful");
+    }
+
+    @PostMapping("/register-sensor")
+    public ResponseEntity<String> performSensorRegistration(@RequestBody @Valid RegistrationSensorDTO registrationSensorDTO) {
+        Sensor sensor = sensorConverter.convertToSensor(registrationSensorDTO);
+
+        registrationService.registerSensor(sensor);
+
+        return ResponseEntity.ok("Sensor has been registered successfully");
     }
 
     @PostMapping("/login")
@@ -53,14 +73,26 @@ public class AuthController {
             return Map.of("message", "Incorrect credentials!");
         }
 
-        AppUser appUser = registrationService.findByUsername(authenticationDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        AppUser appUser = appUserService.findByUsername(authenticationDTO.getUsername());
 
         String token = jwtUtil.generateToken(appUser.getUsername(), appUser.getRole());
         return Map.of("jwt-token", token);
     }
 
-    public AppUser convertToAppUser(AppUserDTO appUserDTO) {
-        return this.modelMapper.map(appUserDTO, AppUser.class);
+    @PostMapping("/login-sensor")
+    public Map<String, String> performSensorLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(),
+                authenticationDTO.getPassword());
+
+        try {
+            authenticationManager.authenticate(authenticationToken);
+        } catch (BadCredentialsException e) {
+            return Map.of("message", "Incorrect credentials!");
+        }
+
+        Sensor sensor = sensorService.findByName(authenticationDTO.getUsername());
+
+        String token = jwtUtil.generateToken(sensor.getName(), sensor.getRole());
+        return Map.of("jwt-token", token);
     }
 }

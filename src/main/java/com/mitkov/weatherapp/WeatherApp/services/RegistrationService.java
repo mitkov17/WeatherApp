@@ -1,8 +1,10 @@
 package com.mitkov.weatherapp.WeatherApp.services;
 
 import com.mitkov.weatherapp.WeatherApp.entities.AppUser;
+import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.repositories.AppUserRepository;
 import com.mitkov.weatherapp.WeatherApp.entities.Role;
+import com.mitkov.weatherapp.WeatherApp.repositories.SensorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,18 +17,32 @@ import java.util.Optional;
 public class RegistrationService {
 
     private final AppUserRepository appUserRepository;
+    private final SensorRepository sensorRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public AppUser register(AppUser appUser) {
+    public void register(AppUser appUser) {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        if (appUser.getRole() == null) {
-            appUser.setRole(Role.ROLE_USER);
-        }
-        return appUserRepository.save(appUser);
+        appUserRepository.save(appUser);
     }
 
-    public Optional<AppUser> findByUsername(String username) {
-        return appUserRepository.findByUsername(username);
+    @Transactional
+    public void registerSensor(Sensor sensor) {
+        sensor.setPassword(passwordEncoder.encode(sensor.getPassword()));
+        sensorRepository.save(sensor);
+    }
+
+    @Transactional
+    public void createDefaultAdminIfNotExists() {
+        AppUser existingAdmin = appUserRepository.findByUsername("admin").orElse(null);
+
+        if (existingAdmin == null) {
+            existingAdmin = new AppUser();
+            existingAdmin.setUsername("admin");
+            existingAdmin.setPassword(passwordEncoder.encode("admin"));
+            existingAdmin.setRole(Role.ROLE_ADMIN);
+
+            appUserRepository.save(existingAdmin);
+        }
     }
 }

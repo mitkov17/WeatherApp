@@ -1,6 +1,6 @@
 package com.mitkov.weatherapp.WeatherApp.security;
 
-import com.mitkov.weatherapp.WeatherApp.entities.AppUser;
+import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,22 +12,22 @@ import java.util.Collections;
 
 @Getter
 @RequiredArgsConstructor
-public class AppUserDetails implements UserDetails {
+public class SensorDetails implements UserDetails {
 
-    private final AppUser appUser;
+    private final Sensor sensor;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(appUser.getRole().name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_SENSOR"));
     }
 
     @Override
     public String getPassword() {
-        return this.appUser.getPassword();
+        return this.sensor.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.appUser.getUsername();
+        return this.sensor.getName();
     }
 }

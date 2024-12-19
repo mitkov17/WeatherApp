@@ -29,6 +29,13 @@ public class Sensor {
     @JsonView(View.Summary.class)
     private String name;
 
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Embedded
     private Location location;
 
@@ -42,11 +49,5 @@ public class Sensor {
 
     @OneToMany(mappedBy = "sensor")
     @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    @JsonIgnore
     private List<Measurement> measurements;
-
-    @OneToOne
-    @JoinColumn(name = "created_by")
-    private AppUser createdBy;
-
 }

@@ -1,9 +1,11 @@
 package com.mitkov.weatherapp.WeatherApp.config;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.mitkov.weatherapp.WeatherApp.entities.Role;
 import com.mitkov.weatherapp.WeatherApp.security.JWTUtil;
 import com.mitkov.weatherapp.WeatherApp.services.AppUserDetailsService;
 import com.mitkov.weatherapp.WeatherApp.entities.UserClaims;
+import com.mitkov.weatherapp.WeatherApp.services.SensorDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final AppUserDetailsService appUserDetailsService;
+    private final SensorDetailsService sensorDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,7 +41,12 @@ public class JWTFilter extends OncePerRequestFilter {
             } else {
                 try {
                     UserClaims userClaims = jwtUtil.validateTokenAndRetrieveClaims(jwt);
-                    UserDetails userDetails = appUserDetailsService.loadUserByUsername(userClaims.getUsername());
+                    UserDetails userDetails;
+                    if (userClaims.getRole().equals(Role.ROLE_SENSOR.name())) {
+                        userDetails = sensorDetailsService.loadUserByUsername(userClaims.getUsername());
+                    } else {
+                        userDetails = appUserDetailsService.loadUserByUsername(userClaims.getUsername());
+                    }
 
                     SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userClaims.getRole());
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

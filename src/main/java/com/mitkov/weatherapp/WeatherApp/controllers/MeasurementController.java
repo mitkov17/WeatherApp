@@ -1,22 +1,21 @@
 package com.mitkov.weatherapp.WeatherApp.controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.mitkov.weatherapp.WeatherApp.converters.MeasurementConverter;
 import com.mitkov.weatherapp.WeatherApp.dto.MeasurementDTO;
+import com.mitkov.weatherapp.WeatherApp.dto.MeasurementGetDTO;
 import com.mitkov.weatherapp.WeatherApp.dto.MeasurementsStatisticsDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
-import com.mitkov.weatherapp.WeatherApp.services.MeasurementService;
 import com.mitkov.weatherapp.WeatherApp.entities.SortParameter;
-import com.mitkov.weatherapp.WeatherApp.util.View;
+import com.mitkov.weatherapp.WeatherApp.services.MeasurementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/measurements")
@@ -28,41 +27,41 @@ public class MeasurementController {
     private final MeasurementConverter measurementConverter;
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO) {
+    public ResponseEntity<String> addMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO) {
 
         measurementService.addMeasurement(measurementConverter.convertToMeasurement(measurementDTO));
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok("The measurement has been added successfully");
     }
 
     @GetMapping
-    @JsonView(View.Summary.class)
-    public List<Measurement> getAllMeasurements() {
-        return measurementService.getAllMeasurements();
+    public List<MeasurementGetDTO> getAllMeasurements() {
+        List<Measurement> measurements = measurementService.getAllMeasurements();
+        return measurements.stream().map(measurementConverter::convertToMeasurementGetDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/rainyDays")
-    @JsonView(View.Summary.class)
-    public List<Measurement> getRainyDays() {
-        return measurementService.getRainyDays();
+    public List<MeasurementGetDTO> getRainyDays() {
+        List<Measurement> measurements = measurementService.getRainyDays();
+        return measurements.stream().map(measurementConverter::convertToMeasurementGetDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/filter")
-    @JsonView(View.Summary.class)
-    public List<Measurement> filterMeasurements(@RequestParam(required = false) MeasurementUnit measurementUnit,
+    public List<MeasurementGetDTO> filterMeasurements(@RequestParam(required = false) MeasurementUnit measurementUnit,
                                                 @RequestParam(required = false) Double min,
                                                 @RequestParam(required = false) Double max) {
 
-        return measurementService.filterMeasurements(measurementUnit, min, max);
+        List<Measurement> measurements = measurementService.filterMeasurements(measurementUnit, min, max);
+        return measurements.stream().map(measurementConverter::convertToMeasurementGetDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/sort")
-    @JsonView(View.Summary.class)
-    public List<Measurement> sortMeasurements(@RequestParam(required = false) MeasurementUnit measurementUnit,
+    public List<MeasurementGetDTO> sortMeasurements(@RequestParam(required = false) MeasurementUnit measurementUnit,
                                               @RequestParam(required = false) Boolean ascending,
                                               @RequestParam(required = false) SortParameter sortParam) {
 
-        return measurementService.sortMeasurements(measurementUnit, ascending, sortParam);
+        List<Measurement> measurements = measurementService.sortMeasurements(measurementUnit, ascending, sortParam);
+        return measurements.stream().map(measurementConverter::convertToMeasurementGetDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/statistics")
@@ -74,19 +73,21 @@ public class MeasurementController {
     }
 
     @GetMapping("/range")
-    @JsonView(View.Summary.class)
-    public List<Measurement> getMeasurementsByTimeRange(@RequestParam String startDate,
+    public List<MeasurementGetDTO> getMeasurementsByTimeRange(@RequestParam String startDate,
                                                         @RequestParam String endDate) {
 
-        return measurementService.getMeasurementsByTimeRange(startDate, endDate);
+        List<Measurement> measurements = measurementService.getMeasurementsByTimeRange(startDate, endDate);
+        return measurements.stream().map(measurementConverter::convertToMeasurementGetDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/paginated")
-    public Page<Measurement> getPaginatedMeasurements(
+    public Page<MeasurementGetDTO> getPaginatedMeasurements(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
-        return measurementService.getPaginatedMeasurements(page, size);
+        Page<Measurement> measurements = measurementService.getPaginatedMeasurements(page, size);
+
+        return measurements.map(measurementConverter::convertToMeasurementGetDTO);
     }
 
 }

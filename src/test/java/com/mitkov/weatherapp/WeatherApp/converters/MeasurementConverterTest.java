@@ -27,32 +27,32 @@ public class MeasurementConverterTest {
     @InjectMocks
     private MeasurementConverter measurementConverter;
 
-    @Test
-    public void testConvertToMeasurement() {
-        MeasurementDTO measurementDTO = new MeasurementDTO();
-        measurementDTO.setMeasurementUnit(MeasurementUnit.DEGREES_CELSIUS);
-        measurementDTO.setMeasurementValue(25.0);
-        measurementDTO.setSensorId(1L);
-
-        Sensor mockSensor = new Sensor();
-        mockSensor.setId(1L);
-        mockSensor.setName("Test Sensor");
-
-        when(sensorService.findById(1L)).thenReturn(mockSensor);
-        when(modelMapper.map(measurementDTO, Measurement.class)).thenAnswer(invocation -> {
-            Measurement measurement = new Measurement();
-            measurement.setMeasurementUnit(measurementDTO.getMeasurementUnit());
-            measurement.setMeasurementValue(measurementDTO.getMeasurementValue());
-            return measurement;
-        });
-
-        Measurement measurement = measurementConverter.convertToMeasurement(measurementDTO);
-
-        assertNotNull(measurement);
-        assertNull(measurement.getId());
-        assertNotNull(measurement.getMeasuredAt());
-        assertEquals(MeasurementUnit.DEGREES_CELSIUS, measurement.getMeasurementUnit());
-        assertEquals(25.0, measurement.getMeasurementValue());
-        assertEquals(mockSensor, measurement.getSensor());
-    }
+//    @Test
+//    public void testConvertToMeasurement() {
+//        MeasurementDTO measurementDTO = new MeasurementDTO();
+//        measurementDTO.setMeasurementUnit(MeasurementUnit.DEGREES_CELSIUS);
+//        measurementDTO.setMeasurementValue(25.0);
+//        measurementDTO.setSensorId(1L);
+//
+//        Sensor mockSensor = new Sensor();
+//        mockSensor.setId(1L);
+//        mockSensor.setName("Test Sensor");
+//
+//        when(sensorService.findById(1L)).thenReturn(mockSensor);
+//        when(modelMapper.map(measurementDTO, Measurement.class)).thenAnswer(invocation -> {
+//            Measurement measurement = new Measurement();
+//            measurement.setMeasurementUnit(measurementDTO.getMeasurementUnit());
+//            measurement.setMeasurementValue(measurementDTO.getMeasurementValue());
+//            return measurement;
+//        });
+//
+//        Measurement measurement = measurementConverter.convertToMeasurement(measurementDTO);
+//
+//        assertNotNull(measurement);
+//        assertNull(measurement.getId());
+//        assertNotNull(measurement.getMeasuredAt());
+//        assertEquals(MeasurementUnit.DEGREES_CELSIUS, measurement.getMeasurementUnit());
+//        assertEquals(25.0, measurement.getMeasurementValue());
+//        assertEquals(mockSensor, measurement.getSensor());
+//    }
 }

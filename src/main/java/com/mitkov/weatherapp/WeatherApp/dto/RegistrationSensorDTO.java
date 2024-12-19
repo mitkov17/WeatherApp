@@ -6,18 +6,17 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
-public class SensorDTO {
+public class RegistrationSensorDTO {
 
     @Size(min = 2, max = 100, message = "Name length should be between 2 and 100 symbols")
     private String name;
+
+    private String password;
 
     private Location location;
 
     private SensorType sensorType;
 
-    private Date dateOfInstallation;
 }

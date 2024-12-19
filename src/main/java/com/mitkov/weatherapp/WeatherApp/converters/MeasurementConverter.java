@@ -1,6 +1,7 @@
 package com.mitkov.weatherapp.WeatherApp.converters;
 
 import com.mitkov.weatherapp.WeatherApp.dto.MeasurementDTO;
+import com.mitkov.weatherapp.WeatherApp.dto.MeasurementGetDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.exceptions.SensorNotFoundException;
@@ -20,6 +21,8 @@ public class MeasurementConverter {
     private final ModelMapper modelMapper;
 
     private final SensorService sensorService;
+
+    private final SensorConverter sensorConverter;
 
     public Measurement convertToMeasurement(MeasurementDTO measurementDTO) {
         Measurement measurement = modelMapper.map(measurementDTO, Measurement.class);
@@ -41,5 +44,11 @@ public class MeasurementConverter {
         }
 
         return measurement;
+    }
+
+    public MeasurementGetDTO convertToMeasurementGetDTO(Measurement measurement) {
+        MeasurementGetDTO measurementGetDTO = modelMapper.map(measurement, MeasurementGetDTO.class);
+        measurementGetDTO.setSensor(sensorConverter.convertToSensorDTO(measurement.getSensor()));
+        return measurementGetDTO;
     }
 }

@@ -1,6 +1,7 @@
 package com.mitkov.weatherapp.WeatherApp.config;
 
 import com.mitkov.weatherapp.WeatherApp.services.AppUserDetailsService;
+import com.mitkov.weatherapp.WeatherApp.services.SensorDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +27,15 @@ public class SecurityConfig {
 
     private final AppUserDetailsService appUserDetailsService;
 
+    private final SensorDetailsService sensorDetailsService;
+
     private final JWTFilter jwtFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
         auth.userDetailsService(appUserDetailsService).passwordEncoder(getPasswordEncoder());
+        auth.userDetailsService(sensorDetailsService).passwordEncoder(getPasswordEncoder());
         return auth.build();
     }
 

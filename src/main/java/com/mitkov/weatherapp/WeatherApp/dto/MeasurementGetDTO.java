@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class MeasurementDTO {
+public class MeasurementGetDTO {
 
     @NotNull(message = "Raining index should not be null")
     private Boolean raining;
@@ -20,6 +20,8 @@ public class MeasurementDTO {
     @NotNull(message = "Measurement value should not be null!")
     private Double measurementValue;
 
-    @NotNull(message = "Sensor ID should not be null")
-    private Long sensorId;
+    private Date measuredAt;
+
+    private SensorDTO sensor;
+
 }

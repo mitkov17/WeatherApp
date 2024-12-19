@@ -26,7 +26,4 @@ public class AppUser {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @OneToOne(mappedBy = "createdBy", cascade = CascadeType.ALL)
-    private Sensor sensor;
 }
