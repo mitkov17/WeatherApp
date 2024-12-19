@@ -2,6 +2,7 @@ package com.mitkov.weatherapp.WeatherApp.repositories;
 
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
+import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -31,4 +32,7 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     List<Measurement> findByMeasurementUnitAndMeasuredAtBefore(MeasurementUnit unit, Date endDate);
 
     List<Measurement> findByMeasuredAtBetween(Date startDate, Date endDate);
+
+    List<Measurement> findBySensor(Sensor sensor);
+
 }

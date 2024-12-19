@@ -1,8 +1,5 @@
 package com.mitkov.weatherapp.WeatherApp.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.mitkov.weatherapp.WeatherApp.util.View;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -21,12 +18,10 @@ public class Sensor {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(View.Summary.class)
     private Long id;
 
     @Column(name = "name", unique = true)
     @Size(min = 2, max = 100, message = "Name length should be between 2 and 100 symbols")
-    @JsonView(View.Summary.class)
     private String name;
 
     @Column(name = "password")

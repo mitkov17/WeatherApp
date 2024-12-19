@@ -3,10 +3,14 @@ package com.mitkov.weatherapp.WeatherApp.services;
 import com.mitkov.weatherapp.WeatherApp.dto.MeasurementsStatisticsDTO;
 import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
+import com.mitkov.weatherapp.WeatherApp.entities.Sensor;
 import com.mitkov.weatherapp.WeatherApp.exceptions.*;
 import com.mitkov.weatherapp.WeatherApp.repositories.MeasurementRepository;
 import com.mitkov.weatherapp.WeatherApp.entities.SortParameter;
+import com.mitkov.weatherapp.WeatherApp.repositories.SensorRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +34,8 @@ import java.util.List;
 public class MeasurementService {
 
     private final MeasurementRepository measurementRepository;
+
+    private final SensorRepository sensorRepository;
 
     @Transactional
     @PreAuthorize("hasRole('SENSOR')")
@@ -118,6 +126,34 @@ public class MeasurementService {
             return measurementRepository.findByMeasurementUnitAndMeasuredAtBefore(measurementUnit, endDate);
         } else {
             return measurementRepository.findByMeasurementUnit(measurementUnit);
+        }
+    }
+
+    public void writeStatisticsToCSV(Writer writer) throws IOException {
+        List<Sensor> sensors = sensorRepository.findAll();
+        CSVFormat csvFormat = CSVFormat.Builder.create()
+                .setDelimiter(';')
+                .setHeader("Sensor name", "Unit", "Min value", "Max value", "Average value", "Count")
+                .build();
+        try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat)) {
+            for (Sensor sensor : sensors) {
+                List<Measurement> measurements = measurementRepository.findBySensor(sensor);
+
+                if (!measurements.isEmpty()) {
+                    DoubleSummaryStatistics stats = measurements.stream()
+                            .mapToDouble(Measurement::getMeasurementValue)
+                            .summaryStatistics();
+
+                    csvPrinter.printRecord(
+                            sensor.getName(),
+                            sensor.getSensorType().name(),
+                            stats.getMin(),
+                            stats.getMax(),
+                            stats.getAverage(),
+                            stats.getCount()
+                    );
+                }
+            }
         }
     }
 

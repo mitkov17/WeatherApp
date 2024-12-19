@@ -8,12 +8,14 @@ import com.mitkov.weatherapp.WeatherApp.entities.Measurement;
 import com.mitkov.weatherapp.WeatherApp.entities.MeasurementUnit;
 import com.mitkov.weatherapp.WeatherApp.entities.SortParameter;
 import com.mitkov.weatherapp.WeatherApp.services.MeasurementService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +72,14 @@ public class MeasurementController {
                                                                     @RequestParam(required = false) String endDate) {
 
         return measurementService.getMeasurementStatistics(measurementUnit, startDate, endDate);
+    }
+
+    @GetMapping("/statistics-export")
+    public void getStatisticsAsCSV(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"measurements_statistics.csv\"");
+
+        measurementService.writeStatisticsToCSV(response.getWriter());
     }
 
     @GetMapping("/range")
